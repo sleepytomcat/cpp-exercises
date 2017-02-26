@@ -22,34 +22,8 @@ namespace AvlTree {
     private:
         static int depth(Node*);
         static Node* balanceSubtree(Node*);
-        static Node* rotateLeft(Node *node) {
-            Node *result = node;
-            
-            if (node->right)
-            {
-                result = node->right;
-                Node *rightLeft = node->right->left;
-                result->left = node;
-                node->right = rightLeft;
-            }
-            
-            return result;
-        }
-        
-        static Node* rotateRight(Node *node) {
-            Node *result = node;
-            
-            if (node->left)
-            {
-                result = node->left;
-                Node *leftRight = node->left->right;
-                result->right = node;
-                node->left = leftRight;
-            }
-            
-            return result;
-        }
-
+        static Node* rotateLeft(Node *node);
+        static Node* rotateRight(Node *node);
         Node *root;
     };
     
@@ -98,6 +72,34 @@ namespace AvlTree {
             return std::max(depth(node->left), depth(node->right)) + 1;
     }
 
+    Node* Tree::rotateLeft(Node *node) {
+        Node *result = node;
+        
+        if (node->right)
+        {
+            result = node->right;
+            Node *rightLeft = node->right->left;
+            result->left = node;
+            node->right = rightLeft;
+        }
+        
+        return result;
+    }
+    
+    Node* Tree::rotateRight(Node *node) {
+        Node *result = node;
+        
+        if (node->left)
+        {
+            result = node->left;
+            Node *leftRight = node->left->right;
+            result->right = node;
+            node->left = leftRight;
+        }
+        
+        return result;
+    }
+    
     Node* Tree::balanceSubtree(Node *node) {
         if (!node)
             return node;
