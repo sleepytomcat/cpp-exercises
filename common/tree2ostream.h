@@ -4,12 +4,10 @@
 #include <iostream>
 #include <iomanip>
 template <class TreeNodeType>
-void tree2ostream(std::ostream &stream, TreeNodeType *root, int currentIndent = 0)
-{
+void tree2ostream(std::ostream &stream, TreeNodeType *root, int currentIndent = 0) {
     if (root) {
         const int INDENT_STEP = 4;
-        if (root->left)
-        {
+        if (root->left) {
             tree2ostream(stream, root->left, currentIndent + INDENT_STEP);
         }
     
@@ -23,8 +21,7 @@ void tree2ostream(std::ostream &stream, TreeNodeType *root, int currentIndent = 
     
         stream << root->data << std::endl;
     
-        if (root->right)
-        {
+        if (root->right) {
             tree2ostream(stream, root->right, currentIndent + INDENT_STEP);
         }
     }
