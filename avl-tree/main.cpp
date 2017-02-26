@@ -1,5 +1,6 @@
-#include <iostream>
+#include <cstdlib> // std::abs
 #include <algorithm> // std::max
+#include <iostream>
 #include "../common/tree2ostream.h"
 
 namespace AvlTree {
@@ -37,20 +38,16 @@ namespace AvlTree {
             while (cursor) {
                 if (cursor->data == value)
                     cursor = nullptr; // value is already in the tree
-                else if (value > cursor->data)
-                {
-                    if (!cursor->right)
-                    {
+                else if (value > cursor->data) {
+                    if (!cursor->right) {
                         cursor->right = new Node(value);
                         cursor = nullptr; // done
                     }
                     else
                         cursor = cursor->right;
                 }
-                else if (value < cursor->data)
-                {
-                    if (!cursor->left)
-                    {
+                else if (value < cursor->data) {
+                    if (!cursor->left) {
                         cursor->left = new Node(value);
                         cursor = nullptr; // done
                     }
@@ -75,8 +72,7 @@ namespace AvlTree {
     Node* Tree::rotateLeft(Node *node) {
         Node *result = node;
         
-        if (node->right)
-        {
+        if (node->right) {
             result = node->right;
             Node *rightLeft = node->right->left;
             result->left = node;
@@ -89,8 +85,7 @@ namespace AvlTree {
     Node* Tree::rotateRight(Node *node) {
         Node *result = node;
         
-        if (node->left)
-        {
+        if (node->left) {
             result = node->left;
             Node *leftRight = node->left->right;
             result->right = node;
