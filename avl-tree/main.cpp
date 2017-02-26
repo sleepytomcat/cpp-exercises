@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm> // std::max
 #include "../common/tree2ostream.h"
 
 namespace AvlTree {
@@ -19,12 +20,43 @@ namespace AvlTree {
         friend std::ostream& operator << (std::ostream &stream, const Tree &tree);
         Tree& insert(int value);
     private:
+        static int depth(Node*);
+        static Node* balanceSubtree(Node*);
+        static Node* rotateLeft(Node *node) {
+            Node *result = node;
+            
+            if (node->right)
+            {
+                result = node->right;
+                Node *rightLeft = node->right->left;
+                result->left = node;
+                node->right = rightLeft;
+            }
+            
+            return result;
+        }
+        
+        static Node* rotateRight(Node *node) {
+            Node *result = node;
+            
+            if (node->left)
+            {
+                result = node->left;
+                Node *leftRight = node->left->right;
+                result->right = node;
+                node->left = leftRight;
+            }
+            
+            return result;
+        }
+
         Node *root;
     };
     
     Tree& Tree::insert(int value) {
         if (!root) {
             root = new Node(value);
+            return *this;
         }
         else {
             Node *cursor = root;
@@ -52,9 +84,45 @@ namespace AvlTree {
                         cursor = cursor->left;
                 }
             }
+            
+            root = balanceSubtree(root);
+            
+            return *this;
         }
-        
-        return *this;
+    }
+    
+    int Tree::depth(Node *node) {
+        if (!node)
+            return 0;
+        else
+            return std::max(depth(node->left), depth(node->right)) + 1;
+    }
+
+    Node* Tree::balanceSubtree(Node *node) {
+        if (!node)
+            return node;
+        else {
+            node->left = balanceSubtree(node->left); // #1
+            node->right = balanceSubtree(node->right);
+            
+            Node *balancedRoot = node;
+            int depthLeft = depth(balancedRoot->left);
+            int depthRight = depth(balancedRoot->right);
+            
+            while (std::abs(depthLeft - depthRight) > 1) {
+                if (depthLeft > depthRight)
+                    balancedRoot = rotateRight(balancedRoot);
+                else
+                    balancedRoot = rotateLeft(balancedRoot);
+                
+                // actually we do not have to do it every time; rotation can only inc or dec depth by 1
+                depthLeft = depth(balancedRoot->left);
+                depthRight = depth(balancedRoot->right);
+            }
+            
+            // at this point we should also return depth(balancedRoot), so we do not have to calculate it again, see #1
+            return balancedRoot;
+        }
     }
 
     std::ostream& operator << (std::ostream &stream, const Tree &tree) {
@@ -69,11 +137,9 @@ int main()
     // test data
     AvlTree::Tree tree;
     tree.insert(10)
-        .insert(9)
-        .insert(8)
-        .insert(7)
-        .insert(6)
-    .insert(5);
+        .insert(5)
+        .insert(3)
+        .insert(11);
     
     std::cout << tree;
     return 0;
